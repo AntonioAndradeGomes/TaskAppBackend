@@ -1,6 +1,7 @@
 import User from "../models/User";
 import { getRepository } from "typeorm";
 import { hash } from "bcryptjs";
+import AppError from "../errors/AppError";
 
 interface Request {
   name: string;
@@ -16,25 +17,25 @@ export default class CreateUserService {
     );
 
     if (!email) {
-      throw new Error("User needs email");
+      throw new AppError("User needs email");
     }
 
     if (!regex.test(email)) {
-      throw new Error("Email assigned to user is invalid");
+      throw new AppError("Email assigned to user is invalid");
     }
 
     if (!password || password.length < 6) {
-      throw new Error("invalid password");
+      throw new AppError("invalid password");
     }
 
     if (!name || name.length == 0) {
-      throw new Error("User must have name");
+      throw new AppError("User must have name");
     }
 
     const chekedUserExists = await userRepository.findOne({ where: { email } });
 
     if (chekedUserExists) {
-      throw new Error("Email address already used.");
+      throw new AppError("Email address already used.");
     }
 
     const hashedPass = await hash(password, 8);

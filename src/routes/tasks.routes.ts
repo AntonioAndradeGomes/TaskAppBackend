@@ -10,14 +10,10 @@ tasksRoutes
   .get("/", taskController.readAll)
 
   .post("/", async (request, response) => {
-    try {
-      const { text_task, due_date } = request.body;
-      const createTask = new CreateTaskService();
-      const task = await createTask.execute({ due_date, text_task });
-      return response.status(201).json(task);
-    } catch (e) {
-      return response.status(400).json({ message: e.message });
-    }
+    const { text_task, due_date } = request.body;
+    const createTask = new CreateTaskService();
+    const task = await createTask.execute({ due_date, text_task });
+    return response.status(201).json(task);
   })
 
   .put("/:idTask", taskController.update)

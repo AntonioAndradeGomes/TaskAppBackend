@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import { getRepository } from 'typeorm';
+import AppError from '../errors/AppError';
 import Task from '../models/Task';
 
 export default class TaskController{
@@ -16,8 +17,8 @@ export default class TaskController{
       where : {id}
     });
     if(!checkTask){
-      //TODO: trocar por um error depois
-      return res.status(400).json({message : 'Non-existent task'});
+
+      throw new AppError("Non-existent task")
     }
     await repository.update(id, body);
     return res.status(200).json(await repository.findOne({where : {id}}));
@@ -30,8 +31,7 @@ export default class TaskController{
       where : {id}
     });
     if(!checkTask){
-      //TODO: trocar por um error depois
-      return res.status(400).json({message : 'Non-existent task'});
+      throw new AppError("Non-existent task")
     }
     await repository.delete(id);
     return res.status(200).json({message : 'Task removed'});
