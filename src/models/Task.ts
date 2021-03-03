@@ -4,7 +4,9 @@ import {
   Column,
   CreateDateColumn,
   UpdateDateColumn,
+  ManyToOne,
 } from "typeorm";
+import User from "./User";
 
 @Entity("tasks")
 export default class Task {
@@ -27,4 +29,7 @@ export default class Task {
 
   @UpdateDateColumn()
   updated_at: Date;
+
+  @ManyToOne(type => User, tasks => Task, {onDelete: "CASCADE", onUpdate : "CASCADE", nullable: false})
+  user: User;
 }

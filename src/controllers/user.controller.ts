@@ -9,7 +9,7 @@ export default class UsersController{
     const id = req.user.id;
     if(!id){
       ///return res.status(401).json({message : 'Unauthenticated user'})
-      throw new AppError("Unauthenticated user", 401)
+      throw new AppError("Unauthenticated user", 401);
     }
     const body = req.body;
     await getRepository(User).update(id, body);

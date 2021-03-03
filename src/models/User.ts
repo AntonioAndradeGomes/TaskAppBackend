@@ -4,7 +4,9 @@ import{
   Column,
   CreateDateColumn,
   UpdateDateColumn,
+  OneToMany,
 } from 'typeorm';
+import Task from './Task';
 
 @Entity("users")
 export default class User{
@@ -25,4 +27,7 @@ export default class User{
 
   @UpdateDateColumn()
   updated_at: Date;
+
+  @OneToMany(type => Task, user => User)
+  tasks : Task[];
 }
