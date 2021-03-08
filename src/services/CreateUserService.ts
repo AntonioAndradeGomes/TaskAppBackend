@@ -9,8 +9,16 @@ interface Request {
   password: string;
 }
 
+interface Return{
+  id : string;
+  name : string;
+  email : string;
+  created_at : Date,
+  updated_at : Date;
+}
+
 export default class CreateUserService {
-  public async execute({ name, email, password }: Request): Promise<User> {
+  public async execute({ name, email, password }: Request): Promise<Return> {
     const userRepository = getRepository(User);
     const regex = new RegExp(
       /^[A-Za-z0-9_\-\.]+@[A-Za-z0-9_\-\.]{2,}\.[A-Za-z0-9]{2,}(\.[A-Za-z0-9])?/
@@ -48,6 +56,12 @@ export default class CreateUserService {
 
     await userRepository.save(user);
 
-    return user;
+    return {
+      id : user.id,
+      name : user.name,
+      email : user.email,
+      created_at : user.created_at,
+      updated_at : user.updated_at,
+    };
   }
 }

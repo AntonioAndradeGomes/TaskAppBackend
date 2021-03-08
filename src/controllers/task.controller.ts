@@ -19,11 +19,17 @@ export default class TaskController {
     const id = req.params.idTask;
     const body = req.body;
     const repository = getRepository(Task);
+
     const checkTask = await repository.findOne({
       where: { id },
+      relations : ["user"]
     });
     if (!checkTask) {
       throw new AppError("Non-existent task");
+    }
+    //check if the task is from the authenticated user
+    if(req.user.id != checkTask.user.id){
+      throw new AppError("task does not belong to the user", 401);
     }
     await repository.update(id, body);
     return res.status(200).json(await repository.findOne({ where: { id } }));
@@ -34,9 +40,14 @@ export default class TaskController {
     const repository = getRepository(Task);
     const checkTask = await repository.findOne({
       where: { id },
+      relations : ["user"]
     });
     if (!checkTask) {
       throw new AppError("Non-existent task");
+    }
+    //check if the task is from the authenticated user
+    if(req.user.id != checkTask.user.id){
+      throw new AppError("task does not belong to the user", 401);
     }
     await repository.delete(id);
     return res.status(200).json({ message: "Task removed" });

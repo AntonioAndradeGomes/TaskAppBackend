@@ -15,15 +15,7 @@ usersRouter
       email,
       password,
     });
-
-    const userReturn = {
-      id: user.id,
-      name: user.name,
-      email: user.email,
-      created_at: user.created_at,
-      updated_at: user.updated_at,
-    };
-    return response.status(201).json(userReturn);
+    return response.status(201).json(user);
   })
 
   .put("/", ensureAuthenticated, controller.update);

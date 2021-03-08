@@ -18,8 +18,8 @@ tasksRoutes
     return response.status(201).json(task);
   })
 
-  .put("/:idTask", taskController.update)
+  .put("/:idTask", ensureAuthenticated, taskController.update)
 
-  .delete("/:idTask", taskController.delete);
+  .delete("/:idTask", ensureAuthenticated, taskController.delete);
 
 export default tasksRoutes;
