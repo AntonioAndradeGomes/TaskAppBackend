@@ -10,6 +10,8 @@ const taskController = new TaskController();
 tasksRoutes
   .get("/", taskController.readAll)
 
+  .get("/only", ensureAuthenticated, taskController.readOnlyUserAuth)
+
   .post("/", ensureAuthenticated, async (request, response) => {
     const { text_task, due_date } = request.body;
     const userId = request.user.id;

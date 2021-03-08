@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { getRepository } from "typeorm";
 import AppError from "../errors/AppError";
 import Task from "../models/Task";
+import User from "../models/User";
 
 export default class TaskController {
   public async readAll(req: Request, res: Response) {
@@ -15,6 +16,20 @@ export default class TaskController {
     );
   }
 
+  public async readOnlyUserAuth(req: Request, res: Response) {
+    const user = await getRepository(User).findOne({
+      where: { id: req.user.id },
+    });
+    if (!user) {
+      throw new AppError("User not found", 401);
+    }
+    return res.json(
+      await getRepository(Task).find({
+        where: { user },
+      })
+    );
+  }
+
   public async update(req: Request, res: Response) {
     const id = req.params.idTask;
     const body = req.body;
@@ -22,13 +37,13 @@ export default class TaskController {
 
     const checkTask = await repository.findOne({
       where: { id },
-      relations : ["user"]
+      relations: ["user"],
     });
     if (!checkTask) {
       throw new AppError("Non-existent task");
     }
     //check if the task is from the authenticated user
-    if(req.user.id != checkTask.user.id){
+    if (req.user.id != checkTask.user.id) {
       throw new AppError("task does not belong to the user", 401);
     }
     await repository.update(id, body);
@@ -40,13 +55,13 @@ export default class TaskController {
     const repository = getRepository(Task);
     const checkTask = await repository.findOne({
       where: { id },
-      relations : ["user"]
+      relations: ["user"],
     });
     if (!checkTask) {
       throw new AppError("Non-existent task");
     }
     //check if the task is from the authenticated user
-    if(req.user.id != checkTask.user.id){
+    if (req.user.id != checkTask.user.id) {
       throw new AppError("task does not belong to the user", 401);
     }
     await repository.delete(id);
